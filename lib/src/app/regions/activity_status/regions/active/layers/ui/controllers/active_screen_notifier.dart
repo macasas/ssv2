@@ -1,4 +1,6 @@
 
+// ignore_for_file: avoid_print
+
 import 'dart:core';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -23,7 +25,8 @@ class ActiveScreenNotifier extends _$ActiveScreenNotifier {
     ref.read(activeMachineProvider).fire(ACTmE.showProfile);
   }
   void settingsButtonPressed(WidgetRef ref) {
-    ref.read(activeMachineProvider).fire(ACTmE.showSettings);
+    print('call settings page');
+    //ref.read(activeMachineProvider).fire(ACTmE.showSettings);
   }
   void courseButtonPressed(WidgetRef ref) {
     ref.read(activeMachineProvider).fire(ACTmE.showCourse);
