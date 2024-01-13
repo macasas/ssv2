@@ -1,0 +1,118 @@
+' blue is new user
+' orange is existing user
+' black is both, plus everything else
+
+@startuml app
+
+skinparam State {
+  BackgroundColor<<Region>> cyan
+  BackgroundColor<<Provider>> cyan
+  BackgroundColor<<Machine>> cyan
+  BackgroundColor<<MState>> cyan
+  BackgroundColor<<PassThru>> yellow
+  BackgroundColor<<Screen>> orange
+  BackgroundColor<<Event>> darkgrey
+}
+
+scale 800 width
+
+[*] -[bold]-> App: start
+
+state App<<Machine>> {
+
+  state AccountStatus {
+
+    state exNewAcc <<exitPoint>>
+    state exOldAcc <<exitPoint>>
+
+    [*] -[#blue,bold]-> accountStatus: toAccountStatus
+
+    state accountStatus
+    accountStatus: bool accountExists
+    
+    state NoAccount<<Region>> {
+    }
+    state Account {
+    }
+    Account: onEnter update\nuser account
+
+    accountStatus -[#orange,bold]-> Account: yes
+    accountStatus --> NoAccount: no
+
+    Account -[#orange,bold]-> exOldAcc: existing
+    NoAccount --> exNewAcc: created
+
+  }
+  
+  state AuthStatus {
+    state epOldAcc <<entryPoint>>
+    state epNewAcc <<entryPoint>>
+    state exAlreadySignedIn <<exitPoint>>
+    state exJustSignedIn <<exitPoint>>
+
+    state authStatus
+    authStatus: authStatus
+    authStatus: checkAuth()
+
+    state signedOut<<Region>> {
+
+    }
+    state signedIn {
+    }
+
+    epOldAcc -[#orange,dashed]-> signedOut
+    epNewAcc -[#blue,dashed]-> signedIn
+
+    [*] --> authStatus: toAuthStatus
+    authStatus --> signedIn  : toSignedIn
+    authStatus --> signedOut : toSignedOut
+
+    signedIn -[#blue,bold]-> exAlreadySignedIn
+    signedOut --> exJustSignedIn
+
+  }
+
+  state ActivityStatus {
+    state epSignedIn <<entryPoint>>
+    state activityStatus {
+    }
+    state inactive {
+      state InactiveScr
+    }
+    state active<<Region>> {
+    }
+    active: main app
+    active: has own statechart
+
+    [*] --> activityStatus: checkActivityStatus
+    activityStatus --> active  : activate
+    activityStatus --> inactive : deactivate
+
+
+    
+    epSignedIn -[bold]-> active
+
+    active --> inactive: deactivate
+    inactive --> active: activate
+
+  }
+
+  ' App
+  [*] -[bold]-> AccountStatus: toAccountStatus
+
+  ' Account Status to Auth Status
+  exOldAcc -[#orange,dashed]-> epOldAcc: checkAuth\nStatusOldAcc
+  exNewAcc -[#blue,dashed]-> epNewAcc: checkAuth\nStatusNewAcc
+
+  ' Auth Status to Activity Status
+  exAlreadySignedIn -[#blue,dashed]-> epSignedIn: checkAcitivtyStatus
+  exJustSignedIn -[#orange,dashed]-> epSignedIn: checkAcitivtyStatus
+
+  ' App Providers
+  state appLifecycleProvider<<Provider>>
+  appLifecycleProvider: appLifecycle
+  appLifecycleProvider --> activityStatus: machine.fire
+}
+
+@enduml
+

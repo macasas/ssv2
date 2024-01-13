@@ -1,0 +1,54 @@
+
+  ' state lifecycle<<Machine>> {
+  '   state epResumed <<entryPoint>>
+  '   state epPaused <<entryPoint>>
+  '   state epInactive <<entryPoint>>
+  '   state epDetached <<entryPoint>>
+
+  '   AppLifecycleState --> epResumed: resumed
+  '   AppLifecycleState --> epPaused: paused
+  '   AppLifecycleState --> epInactive: inactive
+  '   AppLifecycleState --> epDetached: detached
+  '   epResumed --> resumed
+  '   epPaused --> paused
+  '   epInactive --> inactive
+  '   epDetached --> detached
+
+  '   [*] --> resumed: initial
+    
+  '   state resumed { 
+
+  '       [*] --> initializing: initial
+
+  '       state initializing {
+
+  '         loadingStatus<<Condition>> <- loadingStatusProvider<<Provider>>
+  '         state loading {
+  '         }
+  '         ||
+  '         state splashscreen {
+
+  '         }
+  '       }
+  '       state idling {
+  '         state idlescreen {
+  '         }
+  '       }
+  '       state running {
+  '         ' go to running statechart
+  '       }
+  '         loadingStatus -[dotted]-> initializing: loading
+  '         loadingStatus -[dotted]-> running: loaded
+  '       initializing --> running: appFinishedLoading
+  '       running --> idling : paused\nor inactive
+  '       idling --> running : resumed
+      
+  '   }
+  '   state paused {
+  '   }
+  '   state inactive {
+  '   }
+  '   state detached {
+  '   }
+  ' }
+

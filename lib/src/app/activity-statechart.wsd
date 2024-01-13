@@ -1,0 +1,175 @@
+' blue is new user
+' orange is existing user
+' black is both, plus everything else
+
+@startuml app
+
+skinparam State {
+  BackgroundColor<<Region>> cyan
+  BackgroundColor<<Provider>> cyan
+  BackgroundColor<<Machine>> cyan
+  BackgroundColor<<MState>> cyan
+  BackgroundColor<<Condition>> yellow
+  BackgroundColor<<Screen>> orange
+  BackgroundColor<<Event>> darkgrey
+}
+
+scale 800 width
+
+' [*] -[bold]-> App: start
+
+' state App<<Machine>> {
+
+  ' state connectionStateProvider<<Provider>>
+  ' connectionStateProvider: connectionState
+  ' state loadingStatusProvider<<Provider>>
+  ' loadingStatusProvider: loadingStatus
+
+
+  ' state AccountStatus {
+
+  '   state exNewAcc <<exitPoint>>
+  '   state exOldAcc <<exitPoint>>
+
+  '   [*] -[#blue,bold]-> accountStatus: initial
+
+  '   state accountStatus
+  '   accountStatus: bool accountExists
+    
+  '   state NoAccount<<Region>> {
+  '     state epRetryRegister <<entryPoint>>
+  '     state exNewAccount <<exitPoint>>
+  '     state exCancelled <<exitPoint>>
+
+  '     [*] -[#blue,bold]-> register: initial
+  '     epRetryRegister --> register: try again
+  '     state register {
+  '     }
+  '     register: create account
+  '     state confirmAcc {
+  '     }
+  '     confirmAcc: onEnter\nauto signin
+  '     state denyAcc {
+  '     }
+  '     denyAcc: snackbar
+  '   }
+  '   state Account {
+  '   }
+  '   Account: onEnter update\nuser account
+
+  '   state CancelRegistration {
+  '   }
+
+  '   accountStatus -[#orange,bold]-> Account: yes
+  '   accountStatus --> NoAccount: no
+  '   register -[#blue,bold]-> confirmAcc : Account\ncreated
+  '   register --> denyAcc : Account\ndenied
+  '   register <-[dotted]- denyAcc
+
+  '   Account -[#orange,bold]-> exOldAcc: existing
+  '   confirmAcc -[#blue,bold]-> exNewAccount: new user
+  '   exNewAccount -[#blue,bold]-> exNewAcc
+  '   register --> exCancelled
+  '   exCancelled --> CancelRegistration: sorry
+  '   CancelRegistration --> epRetryRegister: try again
+  ' }
+  
+  ' state AuthStatus {
+  '   state epOldAcc <<entryPoint>>
+  '   state epNewAcc <<entryPoint>>
+  '   ' state exSignedOut <<exitPoint>>
+  '   state exAlreadySignedIn <<exitPoint>>
+  '   state exJustSignedIn <<exitPoint>>
+
+  '   state authStatus
+  '   authStatus: authStatus
+  '   authStatus: checkAuth()
+
+  '   state cancelSignin {
+  '   }
+  '   cancelSignin: guest browsing?  
+
+  '   state signedOut<<Region>> {
+  '     state epRetrySignin <<entryPoint>>
+  '     state exCancelSignin <<exitPoint>>
+  '     state exSignedIn <<exitPoint>>
+
+  '     [*] -[#orange,bold]-> signin: initial
+  '     state signin {
+  '     }
+  '     state confirmSignedIn {
+  '     }
+  '     confirmSignedIn: snackbar
+  '     confirmSignedIn: changes\nauthStatusProvider
+  '     state forgot {
+  '     }  
+  '   }
+  '   state signedIn {
+  '   }
+
+  '   epOldAcc -[#orange,dashed]-> signedOut
+  '   epNewAcc -[#blue,dashed]-> signedIn
+  '   epRetrySignin --> signin: try again
+
+  '   [*] --> authStatus: initial
+  '   authStatus --> signedIn  : signedIn
+  '   authStatus --> signedOut : signedOut
+
+  '   signin -[#orange,bold]-> confirmSignedIn : success
+  '   signin --> forgot: forgot
+  '   forgot --> signin: forgot
+
+  '   signedIn -[#blue,bold]-> exAlreadySignedIn
+  '   confirmSignedIn -[#orange,bold]-> exSignedIn
+  '   exSignedIn -[#orange,bold]-> exJustSignedIn
+    
+  '   signin --> exCancelSignin: cancel
+  '   exCancelSignin --> cancelSignin
+  '   cancelSignin --> epRetrySignin
+
+  ' }
+
+  state ActivityStatus {
+    state epSignedIn <<entryPoint>>
+    state activityStatus {
+    }
+    state inactive {
+      state InactiveScreen
+    }
+    state active<<Region>> {
+    }
+    active: main app
+    active: has own statechart
+
+    [*] --> activityStatus: initial
+    activityStatus --> active  : activate
+    activityStatus --> inactive : deactivate
+
+
+    
+    epSignedIn -[bold]-> active
+
+    active --> inactive: deactivate
+    inactive --> active: activate
+
+  }
+
+  ' App
+'   [*] -[bold]-> AccountStatus: initial
+
+'   ' Account Status to Auth Status
+'   exOldAcc -[#orange,dashed]-> epOldAcc
+'   exNewAcc -[#blue,dashed]-> epNewAcc
+
+'   ' Auth Status to Activity Status
+'   exAlreadySignedIn -[#blue,dashed]-> epSignedIn
+'   exJustSignedIn -[#orange,dashed]-> epSignedIn
+
+'   ' App Providers
+'   state appLifecycleProvider<<Provider>>
+'   appLifecycleProvider: appLifecycle
+'   appLifecycleProvider --> activityStatus: machine.fire
+' }
+
+@enduml
+

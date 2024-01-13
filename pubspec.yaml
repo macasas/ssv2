@@ -1,0 +1,81 @@
+name: ssv2
+description: "Storied Self disjointed"
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.3 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.4.9
+  riverpod_annotation: ^2.3.3
+  hisma: ^0.3.2
+  hisma_console_monitor: ^0.2.0+3
+  hisma_flutter: ^0.2.0+3
+  hisma_visual_monitor: ^0.3.1+1
+  logging: ^1.1.0
+  cupertino_icons: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  build_runner: ^2.4.7
+  riverpod_generator: ^2.3.9
+  flutter_lints: ^2.0.0
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/
+    - assets/translations/
+    - assets/translations/en.json
+    - assets/translations/es.json
+    - assets/envs/
+    - assets/envs/env.production
+    - assets/envs/env.staging
+    - assets/envs/env.development
+    - assets/images/
+    - assets/images/splash/splash_image_template.svg
+    - assets/icons/
+    - assets/policies/
+
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Poppins-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Poppins-Italic.ttf
+          style: italic
+        - asset: assets/fonts/Poppins-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Poppins-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/Poppins-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 800
+
+scripts:
+  help: make help
+
+  visma: make run_visma
+  diagrams: make diagrams
+  get: make get
+  format: make format
+  clean: make clean
+  build_multidex: make build_on_android_multidex
+
+  run_on_ios: make run_on_ios
+  run_on_ios_sim: make run_on_ios_sim
+
+  run_on_android: make run_on_android
+  rebuild_pods: make rebuild_pods
