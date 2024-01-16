@@ -57,6 +57,8 @@ final authStatusMachineProvider = Provider((ref) {
           action: (StateMachine<dynamic, dynamic, dynamic> machine, arg) {  
             print("AuthStatus.authStatus.onEntry");
             print("Check state of auth");
+            
+            // CHANGE this to simulate if user is already signed in or not
             const bool signedIn = false;
 
             if (signedIn == false) {

@@ -16,7 +16,9 @@ final activityStatusRouterProvider = Provider((ref) => HismaRouterGenerator<ActS
     creators: {
       ActSTmS.activityStatus: NoUIChange(),
       ActSTmS.active: MaterialPageCreator<ActSTmS>(
-        widget: const ActiveScreen(),),
+        // ToDo: Will become Active Region
+        widget: const ActiveScreen(),
+      ),
       ActSTmS.inactive: MaterialPageCreator<ActSTmS>(widget: const InactiveScreen(),),
 
     },

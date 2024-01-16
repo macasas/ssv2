@@ -15,7 +15,7 @@ Future<void> main() async {
     (m) => VisualMonitor(
       m,
       // host: 'localhost',
-      port: 4030,
+      port: 4040,
     ),
     (m) => ConsoleMonitor(m),
   ];

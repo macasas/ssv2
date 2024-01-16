@@ -56,6 +56,8 @@ final accountStatusMachineProvider = Provider((ref) {
           action: (StateMachine<dynamic, dynamic, dynamic> machine, arg) {  
             print("AccountStatus.accountStatus.onEntry");
             print("Check existance of user account");
+            
+            // CHANGE this to simulate existance of account
             const bool accountExists = true;
 
             if (accountExists == false) {

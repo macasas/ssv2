@@ -43,6 +43,8 @@ final activityStatusMachineProvider = Provider((ref) {
           action: (StateMachine<dynamic, dynamic, dynamic> machine, arg) {  
             print("ActivityStatus.activityStatus.onEntry");
             print("Check existence of activity");
+
+            // CHANGE this to simulate inactivity
             const bool activity = true;
 
             if (activity == false) {
